@@ -26,6 +26,9 @@
 .autocomplete-item:hover {
     background-color: lightgray;
 }
+.autocomplete-item--active {
+    background-color: lightgray;
+}
 .hightlight {
     background-color: orange;
     font-weight: bold;

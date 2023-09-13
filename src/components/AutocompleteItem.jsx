@@ -19,14 +19,14 @@ const Hightlight = ({ filter, str }) => {
     return str
 }
 
-const AutocompleteItem = ({name, filter }) => {
+const AutocompleteItem = ({name, filter, active}) => {
 
     const light = useCallback((str) => {
         return <Hightlight filter={filter} str={str} />
     }, [filter])
 
     return (
-        <div className="autocomplete-item">
+        <div className={active ? "autocomplete-item autocomplete-item--active" : "autocomplete-item"}>
             {light(name)}
         </div>
     );
