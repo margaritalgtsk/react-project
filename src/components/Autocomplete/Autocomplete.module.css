@@ -1,0 +1,23 @@
+.autocomplete {
+    width: 50%;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+}
+.autocompleteItem {
+    padding: 10px 0;
+}
+.autocompleteItem:hover {
+    background-color: lightgray;
+}
+.autocompleteItem.active {
+    background-color: lightgray;
+}
+.highlight {
+    background-color: orange;
+    font-weight: bold;
+}
