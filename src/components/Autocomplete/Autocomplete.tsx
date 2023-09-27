@@ -1,23 +1,23 @@
 import React, {FC} from 'react';
 import AutocompleteItem from "./AutocompleteItem";
 import classes from './Autocomplete.module.css';
-import {ISearchingResult} from "../../types/types";
+import {ISearchResult} from "../../types/types";
 
-interface AutocompleteProps {
+interface IAutocompleteProps {
     query: string;
-    results: ISearchingResult[];
+    results: ISearchResult[];
     selectedIndex: number;
-    updateData: (name: string) => void;
+    updateData: (value: ISearchResult) => void;
 }
 
-const Autocomplete: FC<AutocompleteProps> = ({query, results, selectedIndex, updateData}) => {
-    
+const Autocomplete: FC<IAutocompleteProps> = ({query, results, selectedIndex, updateData}) => {
+
     return (
         <div className={classes.autocomplete}>
             {results.map((result, i) =>
                 <AutocompleteItem
                     key={result.id}
-                    name={result.title}
+                    result={result}
                     filter={query}
                     active={i === selectedIndex}
                     updateData={updateData}

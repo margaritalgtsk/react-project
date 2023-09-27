@@ -1,33 +1,25 @@
 import React, {FC, Fragment} from 'react';
 import classes from './Autocomplete.module.css';
+import {ISearchResult} from "../../types/types";
 
-const Highlight = (filter:string, str:string) => {
+const getHighlightedText = (text: string, highlight: string): JSX.Element => {
 
-    if (!filter) return str;
-    const regexp = new RegExp(filter, 'ig');
-    const matchValue = str.match(regexp);
-
-    if (matchValue) {
-        return str.split(regexp).map((notHighlightElement, index, array) => {
-            if (index < array.length - 1) {
-                const highlightElement = matchValue.shift()
-                return <Fragment key={index}>{notHighlightElement}<span
-                    className={classes.highlight}>{highlightElement}</span></Fragment>
-            }
-            return notHighlightElement;
-        })
-    }
-    return str;
+    const parts: string[] = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return <span> {parts.map((part: string, i: number) =>
+        <span key={i} className={part.toLowerCase() === highlight.toLowerCase() ? classes.highlight : ''}>
+            {part}
+        </span>)
+    } </span>;
 }
 
-interface AutocompleteItemProps {
-    name: string;
+interface IAutocompleteItemProps {
     filter: string;
     active: boolean;
-    updateData: (name: string) => void;
+    updateData: (value: ISearchResult) => void;
+    result: ISearchResult;
 }
 
-const AutocompleteItem: FC<AutocompleteItemProps> = ({name, filter, active, updateData}) => {
+const AutocompleteItem: FC<IAutocompleteItemProps> = ({result, filter, active, updateData}) => {
 
     const rootClasses = [classes.autocompleteItem]
 
@@ -36,13 +28,13 @@ const AutocompleteItem: FC<AutocompleteItemProps> = ({name, filter, active, upda
     }
 
     const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-        updateData(name)
+        updateData(result)
     }
 
     return (
         <div onClick={clickHandler}
             className={rootClasses.join(' ')}>
-            {Highlight(filter,name)}
+            {getHighlightedText(result.title, filter)}
         </div>
     );
 };

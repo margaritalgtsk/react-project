@@ -1,7 +1,6 @@
 import {useState} from "react";
-import {ISearchingResult} from "../types/types";
 
-export const useKeyboardNav = (searchingResults: ISearchingResult[], updateData: (title: string) => void): [React.KeyboardEventHandler<HTMLDivElement>, number] => {
+export const useKeyboardNav = <T extends {}>(searchingResults: T[], updateData: (value: T) => void): [React.KeyboardEventHandler<HTMLDivElement>, number] => {
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
         const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -14,7 +13,7 @@ export const useKeyboardNav = (searchingResults: ISearchingResult[], updateData:
                 );
             }
             if (event.key === 'Enter') {
-                updateData(searchingResults[selectedIndex].title)
+                updateData(searchingResults[selectedIndex])
             }
         };
 

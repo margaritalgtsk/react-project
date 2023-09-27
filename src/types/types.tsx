@@ -1,4 +1,4 @@
-export interface ISearchingResult {
+export interface ISearchResult {
     id: number;
     title: string;
 }
