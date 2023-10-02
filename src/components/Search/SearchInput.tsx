@@ -1,7 +1,12 @@
-import React from 'react';
+import React, {FC} from 'react';
 import classes from './Search.module.css';
 
-const SearchInput = ({query, setQuery}) => {
+interface ISearchInputProps {
+    query: string;
+    setQuery: (query: string) => void;
+}
+
+const SearchInput: FC<ISearchInputProps> = ({query, setQuery}) => {
 
     return (
         <input className={classes.searchInput}
