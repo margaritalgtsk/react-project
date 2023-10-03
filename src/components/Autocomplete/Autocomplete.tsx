@@ -1,13 +1,13 @@
 import React, {FC} from 'react';
 import AutocompleteItem from "./AutocompleteItem";
 import classes from './Autocomplete.module.css';
-import {ISearchResult} from "../../types/types";
+import {ISearchAutocomplete} from "../../types/types";
 
 interface IAutocompleteProps {
     query: string;
-    results: ISearchResult[];
     selectedIndex: number;
-    updateData: (value: ISearchResult) => void;
+    updateData: (value: ISearchAutocomplete) => void;
+    results: ISearchAutocomplete[];
 }
 
 const Autocomplete: FC<IAutocompleteProps> = ({query, results, selectedIndex, updateData}) => {
@@ -16,7 +16,7 @@ const Autocomplete: FC<IAutocompleteProps> = ({query, results, selectedIndex, up
         <div className={classes.autocomplete}>
             {results.map((result, i) =>
                 <AutocompleteItem
-                    key={result.id}
+                    key={i}
                     result={result}
                     filter={query}
                     active={i === selectedIndex}

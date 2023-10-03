@@ -1,6 +1,6 @@
-import React, {FC, Fragment} from 'react';
+import React, {FC} from 'react';
 import classes from './Autocomplete.module.css';
-import {ISearchResult} from "../../types/types";
+import {ISearchAutocomplete} from "../../types/types";
 
 const getHighlightedText = (text: string, highlight: string): JSX.Element => {
 
@@ -15,8 +15,8 @@ const getHighlightedText = (text: string, highlight: string): JSX.Element => {
 interface IAutocompleteItemProps {
     filter: string;
     active: boolean;
-    updateData: (value: ISearchResult) => void;
-    result: ISearchResult;
+    updateData: (value: ISearchAutocomplete) => void;
+    result: ISearchAutocomplete;
 }
 
 const AutocompleteItem: FC<IAutocompleteItemProps> = ({result, filter, active, updateData}) => {
@@ -34,7 +34,7 @@ const AutocompleteItem: FC<IAutocompleteItemProps> = ({result, filter, active, u
     return (
         <div onClick={clickHandler}
             className={rootClasses.join(' ')}>
-            {getHighlightedText(result.title, filter)}
+            {getHighlightedText(result.name, filter)}
         </div>
     );
 };
