@@ -1,0 +1,10 @@
+.favorite_icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.favorite_icon svg {
+    width: 20px;
+    height: 20px;
+}

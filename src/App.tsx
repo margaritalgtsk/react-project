@@ -3,7 +3,6 @@ import './styles/App.css';
 import Search from "./components/Search/Search";
 
 function App() {
-
   return (
     <Search/>
   );

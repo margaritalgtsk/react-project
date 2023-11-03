@@ -29,7 +29,7 @@ const AutocompleteItem: FC<IAutocompleteItemProps> = ({result, filter, active, u
 
     const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
         updateData(result)
-    }
+    };
 
     return (
         <div onClick={clickHandler}
