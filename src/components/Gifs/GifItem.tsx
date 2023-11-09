@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Col} from "antd";
+import {Col, ConfigProvider} from "antd";
 import {HeartTwoTone} from '@ant-design/icons';
 import classes from "./Gifs.module.css";
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
@@ -31,23 +31,35 @@ const GifItem: React.FC<IGifItemProps> = ({id, src}) => {
     };
 
     return (
-        <Col span={8}
-             className={classes.col}
-             onMouseEnter={() => setIsShown(true)}
-             onMouseLeave={() => setIsShown(false)}>
-            <img
-                className={classes.gifImage}
-                src={src}
-                alt="giphy"
-            />
-            {isShown && (
-                <HeartTwoTone
-                    className={classes.favorite_icon}
-                    twoToneColor={favorites.some(f => f.id === id) ? 'red' : 'grey'}
-                    onClick={() => setFavorites(id, src)}
+        <ConfigProvider
+            theme={{
+                token: {
+                    screenSMMin: 468,
+                    screenSM: 468
+                }
+            }}>
+            <Col xs={24} sm={12} md={8}
+                 className={classes.col}
+                 onMouseEnter={() => setIsShown(true)}
+                 onMouseLeave={() => setIsShown(false)}>
+                <img
+                    className={classes.gifImage}
+                    src={src}
+                    alt="giphy"
                 />
-            )}
-        </Col>
+                {favorites.some(f => f.id === id)
+                    ? ( <HeartTwoTone
+                            className={classes.favorite_icon}
+                            twoToneColor='red'
+                            onClick={() => setFavorites(id, src)} />)
+                    : ( isShown &&
+                        <HeartTwoTone
+                            className={classes.favorite_icon}
+                            twoToneColor='grey'
+                            onClick={() => setFavorites(id, src)} />)
+                }
+            </Col>
+        </ConfigProvider>
     );
 };
 
