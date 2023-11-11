@@ -14,9 +14,8 @@ export interface ISearchGif {
             url: string;
         }
     };
-}
-
-export interface IFavoriteGif {
-    id: string;
-    src: string;
+    title: string;
+    rating: string;
+    type: string;
+    import_datetime: string;
 }

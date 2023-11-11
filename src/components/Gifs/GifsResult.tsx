@@ -32,11 +32,8 @@ const GifsResult: FC<IGifsResultProps> = ({results, searchQuery}) => {
     return (
         <>
             <Row gutter={[16, 16]}>
-                {results.map((result, i) =>
-                    <GifItem
-                        key={result.id}
-                        id={result.id}
-                        src={result.images.fixed_height.url}/>
+                {results.map((result) =>
+                    <GifItem key={result.id} {...result} />
                 )}
             </Row>
             {results.length > 0 &&
