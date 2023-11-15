@@ -35,7 +35,7 @@ const GifsCardView: FC<IGifsResultProps> = ({results, searchQuery, isSearchResul
         setPageCurrent({...pageCurrent, pageFavorite: page});
     };
 
-    const dataCards = isSearchResult ? results : results.slice((page - 1) * pageSize, pageSize * page);
+    const dataCards = isSearchResult ? results : results.slice((pageCurrent.pageFavorite - 1) * pageSize, pageSize * pageCurrent.pageFavorite);
 
     return (
         <>
