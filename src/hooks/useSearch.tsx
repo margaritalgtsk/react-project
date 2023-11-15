@@ -7,4 +7,4 @@ export const useSearch = (query: string, list: ISearchResult[]): ISearchResult[]
     }, [query, list]);
 
     return searchingResults;
-}
+};

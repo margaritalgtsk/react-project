@@ -1,7 +1,6 @@
-.searchInput {
-    width: 50%;
-    height: 30px;
-    border: 2px solid teal;
-    border-radius: 5px;
-    box-sizing: border-box;
+.searchWrapper {
+    position: relative;
+}
+.switchView {
+margin-top: 10px;
 }
