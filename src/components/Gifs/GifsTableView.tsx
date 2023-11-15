@@ -1,25 +1,28 @@
 import React, {FC, useEffect, useMemo, useState} from 'react';
 import {Table} from 'antd';
-import {Pagination} from 'antd';
-import {ISearchGif} from "../../types/types";
+import {IPageCurrent, ISearchGif} from "../../types/types";
 import {fetchGifs} from "../../asyncAction/fetchGifs"
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
-import {addFavoriteGifs, removeFavoriteGifs} from "../../store/favoriteGifsReducer";
+import {addFavoriteGifs, removeFavoriteGifs, selectFavorites} from "../../store/slices/favoriteSlice";
+import {ColumnsType} from "antd/es/table/interface";
+import {selectTotalGifs} from "../../store/slices/searchGifsSlice";
 
-interface IGifsResultTabletProps {
+interface IGifsTableViewProps {
     results: ISearchGif[];
     searchQuery: string;
+    isSearchResult: boolean;
+    pageCurrent: IPageCurrent;
+    setPageCurrent: (pageCurrent: IPageCurrent) => void;
 }
 
-const GifsResultTable: FC<IGifsResultTabletProps> = ({results, searchQuery}) => {
+const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchResult, pageCurrent, setPageCurrent}) => {
 
     const [page, setPage] = useState<number>(1);
-    const totalGifs = useAppSelector((state) => state.searchGifs.total);
+    const totalGifs = useAppSelector(selectTotalGifs);
     const maxTotalGifs = 54;
     const pageSize = 9;
-    const offset = page * pageSize;
     const dispatch = useAppDispatch();
-    const favorites = useAppSelector((state) => state.favorites.favorites);
+    const favorites = useAppSelector(selectFavorites);
 
     const dataTable = useMemo(()=> results.map(result => {
         return {
@@ -38,9 +41,7 @@ const GifsResultTable: FC<IGifsResultTabletProps> = ({results, searchQuery}) => 
         setSelectedRowKeys(initialSelectedRow)
     }, [initialSelectedRow] );
 
-
-    //selectedRowKeys: React.Key[]
-    const onSelectSelectedRow = (record: any, selected: boolean, selectedRowKeys: any) => {
+    const onSelectSelectedRow = (record: ISearchGif, selected: boolean) => {
 
         const data = {
             id: record.id,
@@ -70,19 +71,22 @@ const GifsResultTable: FC<IGifsResultTabletProps> = ({results, searchQuery}) => 
         onSelect: onSelectSelectedRow
     };
 
-    useEffect(() => {
+    const handleChangePage = (page: number) => {
+        setPage(page);
+        setPageCurrent({...pageCurrent, pageSearch: page});
+        const offset = (page - 1) * pageSize;
         dispatch(fetchGifs({searchQuery, offset}))
-    },[page]);
-
-    const changePage = (page: number) => {
-        setPage(page)
     };
 
-    const columns  = [
+    const columns: ColumnsType<ISearchGif> = [
         {
             title: 'Image',
             dataIndex: 'images',
-            render: (images: any) => <img alt='giphy' src={images.fixed_height.url} />,
+            render: (images: {
+                fixed_height: {
+                    url: string;
+                }
+            }) => <img alt='giphy' src={images.fixed_height.url} />,
             key: 'images',
         },
         {
@@ -107,27 +111,32 @@ const GifsResultTable: FC<IGifsResultTabletProps> = ({results, searchQuery}) => 
         },
     ];
 
+    const paginationSearchParams = {
+        defaultCurrent: 1,
+        current: pageCurrent.pageSearch,
+        total: (totalGifs > maxTotalGifs ? maxTotalGifs - pageSize : totalGifs - pageSize),
+        onChange: handleChangePage
+    };
+
+    const paginationFavoriteParams = {
+        defaultCurrent: 1,
+        current: pageCurrent.pageFavorite,
+        pageSize: pageSize,
+        onChange: (page: number) => setPageCurrent({...pageCurrent, pageFavorite: page})
+    };
+
     return (
         <>
             {dataTable.length > 0 &&
-                <>
-                    <Table
-                        dataSource={dataTable}
-                        columns={columns}
-                        rowSelection={rowSelection}
-                        pagination={false}
-                    />
-
-                    <Pagination
-                        defaultCurrent={1}
-                        total={totalGifs > maxTotalGifs ? maxTotalGifs - pageSize : totalGifs - pageSize}
-                        pageSize={pageSize}
-                        onChange={changePage}/>
-                </>
+                <Table
+                    dataSource={dataTable}
+                    columns={columns}
+                    rowSelection={rowSelection}
+                    pagination={isSearchResult ? paginationSearchParams : paginationFavoriteParams}
+                />
             }
         </>
-
     );
 };
 
-export default GifsResultTable;
+export default GifsTableView;

@@ -1,14 +1,14 @@
 import {combineReducers} from "redux";
 import {configureStore} from '@reduxjs/toolkit'
-import favoriteGifsReducer from "./favoriteGifsReducer";
-import searchGifsReducer from "./searchGifsReducer";
-import autocompleteReducer from "./autocompleteReducer";
+import favoriteSlice from "./slices/favoriteSlice";
+import searchGifsSlice from "./slices/searchGifsSlice";
+import autocompleteSlice from "./slices/autocompleteSlice";
 import {loadFromLocalStorage, saveToLocalStorage} from "./localStorage";
 
 const rootReducer = combineReducers({
-    searchGifs: searchGifsReducer,
-    favorites: favoriteGifsReducer,
-    autocomplete: autocompleteReducer
+    searchGifs: searchGifsSlice,
+    favorites: favoriteSlice,
+    autocomplete: autocompleteSlice
 });
 
 const preloadedState = loadFromLocalStorage();

@@ -1,6 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {PayloadAction} from "@reduxjs/toolkit/dist/createAction";
-import {ISearchGif} from "../types/types";
+import {ISearchGif} from "../../types/types";
 
 interface IFavoriteGifsState {
     favorites: ISearchGif[];
@@ -14,8 +14,7 @@ export const favoriteGifsSlice = createSlice({
     name: 'favorites',
     initialState,
     reducers: {
-        //PayloadAction<ISearchGif>
-        addFavoriteGifs: (state, action) => {
+        addFavoriteGifs: (state, action: PayloadAction<ISearchGif>) => {
             state.favorites.push(action.payload);
         },
         removeFavoriteGifs: (state, action: PayloadAction<string>) => {
@@ -25,4 +24,5 @@ export const favoriteGifsSlice = createSlice({
 });
 
 export const {addFavoriteGifs, removeFavoriteGifs} = favoriteGifsSlice.actions;
+export const selectFavorites = (state: {favorites: IFavoriteGifsState}) => state.favorites.favorites;
 export default favoriteGifsSlice.reducer;

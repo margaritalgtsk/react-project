@@ -4,28 +4,30 @@ import {TabsProps} from 'antd';
 import SearchInput from "./SearchInput";
 import Autocomplete from "../Autocomplete/Autocomplete";
 import {useKeyboardNav} from "../../hooks/useKeyboardNav";
-import {ISearchAutocomplete} from "../../types/types";
+import {IPageCurrent, ISearchAutocomplete} from "../../types/types";
 import {useDebounce} from "../../hooks/useDebounce";
-import GifsResult from "../Gifs/GifsResult";
-import GifsFavorites from "../Gifs/GifsFavorites";
+import GifsCardView from "../Gifs/GifsCardView";
 import {fetchGifs} from "../../asyncAction/fetchGifs"
 import {fetchAutocomplete} from "../../asyncAction/fetchAutocomplete";
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
-import GifsResultTable from '../Gifs/GifsResultTable';
-import GifsFavoritesTable from "../Gifs/GifsFavoritesTable";
-import {useLocalStorage} from "../../hooks/useLocalStorage";
+import GifsTableView from '../Gifs/GifsTableView';
+import useLocalStorage from "../../hooks/useLocalStorage";
 import classes from "./Search.module.css";
+import {selectFavorites} from "../../store/slices/favoriteSlice";
+import {selectSearchGifs} from "../../store/slices/searchGifsSlice";
+import {selectAutocomplete} from "../../store/slices/autocompleteSlice";
 
 const Search = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const debouncedValue = useDebounce<string>(searchQuery, 500);
 
     const [isShowAutocomplete, setIsShowAutocomplete] = useState<boolean>(false);
-    const [isTableView, setIsTableView] = useLocalStorage("isTableView", false);
+    const [isTableView, setIsTableView] = useLocalStorage<boolean>("isTableView", false);
+    const [pageCurrent, setPageCurrent] = useState<IPageCurrent>({pageSearch: 1, pageFavorite: 1});
 
-    const favorites = useAppSelector((state) => state.favorites.favorites);
-    const searchGifs = useAppSelector((state) => state.searchGifs.value);
-    const searchAutocomplete = useAppSelector((state) => state.autocomplete.value);
+    const favorites = useAppSelector(selectFavorites);
+    const searchGifs = useAppSelector(selectSearchGifs);
+    const searchAutocomplete = useAppSelector(selectAutocomplete);
     const dispatch = useAppDispatch();
 
     const updateData = (value: ISearchAutocomplete) => {
@@ -45,19 +47,18 @@ const Search = () => {
         setIsTableView(checked);
     };
 
-    const GifsResultView = isTableView ? GifsResultTable : GifsResult;
-    const GifsFavoritesView = isTableView ? GifsFavoritesTable : GifsFavorites;
+    const GifsView = isTableView ? GifsTableView : GifsCardView;
 
     const items: TabsProps['items'] = [
         {
             key: 'searchResults',
             label: 'Search results',
-            children: <GifsResultView results={searchGifs} searchQuery={searchQuery}/>,
+            children: <GifsView results={searchGifs} searchQuery={searchQuery} isSearchResult={true} pageCurrent={pageCurrent} setPageCurrent={setPageCurrent} />,
         },
         {
             key: 'favorites',
             label: `Favorites (${favorites.length})`,
-            children: <GifsFavoritesView favorites={favorites}/>,
+            children: <GifsView results={favorites} searchQuery={searchQuery} isSearchResult={false} pageCurrent={pageCurrent} setPageCurrent={setPageCurrent} />,
         },
     ];
 
@@ -72,7 +73,7 @@ const Search = () => {
                 />}
             <br />
             <Switch className={classes.switchView} checkedChildren="Table View" unCheckedChildren="Card View" checked={isTableView} onChange={handleChangeSwitch} />
-            <Tabs defaultActiveKey="1" items={items}/>
+            <Tabs defaultActiveKey="1" items={items} />
         </div>
     );
 };

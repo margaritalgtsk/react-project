@@ -2,21 +2,21 @@ import React, {useMemo, useState} from 'react';
 import {Col, ConfigProvider} from "antd";
 import {HeartTwoTone} from '@ant-design/icons';
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
-import {addFavoriteGifs, removeFavoriteGifs} from "../../store/favoriteGifsReducer"
+import {addFavoriteGifs, removeFavoriteGifs, selectFavorites} from "../../store/slices/favoriteSlice"
 import {ISearchGif} from "../../types/types";
 import classes from "./Gifs.module.css";
 
-const GifItem: React.FC<ISearchGif> = ({...result}) => {
+const GifItem: React.FC<ISearchGif> = (result) => {
 
     const [isShown, setIsShown] = useState<boolean>(false);
-    const favorites = useAppSelector((state) => state.favorites.favorites);
+    const favorites = useAppSelector(selectFavorites);
     const dispatch = useAppDispatch();
 
     const isFavorites = useMemo(() => favorites.some(f => f.id === result.id),
         [favorites, result.id]
     );
 
-    const setFavorites = ({...result}) => {
+    const setFavorites = (result: ISearchGif) => {
 
         if (isFavorites) {
             dispatch(removeFavoriteGifs(result.id))

@@ -9,6 +9,7 @@ export interface ISearchAutocomplete {
 
 export interface ISearchGif {
     id: string;
+    key?: React.Key;
     images: {
         fixed_height: {
             url: string;
@@ -18,4 +19,9 @@ export interface ISearchGif {
     rating: string;
     type: string;
     import_datetime: string;
+}
+
+export interface IPageCurrent {
+    pageSearch: number;
+    pageFavorite: number;
 }
