@@ -1,11 +1,12 @@
 import React, {FC, useEffect, useMemo, useState} from 'react';
-import {Table} from 'antd';
+import {Table, Modal} from 'antd';
 import {IPageCurrent, ISearchGif} from "../../types/types";
 import {fetchGifs} from "../../asyncAction/fetchGifs"
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
 import {addFavoriteGifs, removeFavoriteGifs, selectFavorites} from "../../store/slices/favoriteSlice";
 import {ColumnsType} from "antd/es/table/interface";
 import {selectTotalGifs} from "../../store/slices/searchGifsSlice";
+import classes from "./GifsTableView.module.css";
 
 interface IGifsTableViewProps {
     results: ISearchGif[];
@@ -33,7 +34,7 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
 
     const initialSelectedRow = useMemo(()=> {
         return  dataTable.filter(result => favorites.some(favorite => result.id === favorite.id)).map(item => item.id);
-    },[results, favorites]);
+    },[dataTable, favorites]);
 
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -48,6 +49,12 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
             images: {
                 fixed_height: {
                     url: record.images.fixed_height.url
+                },
+                fixed_height_small: {
+                    url: record.images.fixed_height_small.url
+                },
+                original: {
+                    url: record.images.original.url
                 }
             },
             title: record.title,
@@ -57,11 +64,11 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
         };
 
         if (!selected) {
-            dispatch(removeFavoriteGifs(record.id))
+            dispatch(removeFavoriteGifs(record.id));
             setSelectedRowKeys(selectedRowKeys => selectedRowKeys.filter((data) => data !== record.id ))
 
         } else {
-            dispatch(addFavoriteGifs(data))
+            dispatch(addFavoriteGifs(data));
             setSelectedRowKeys([...selectedRowKeys, record.id]);
         }
     };
@@ -83,10 +90,10 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
             title: 'Image',
             dataIndex: 'images',
             render: (images: {
-                fixed_height: {
+                fixed_height_small: {
                     url: string;
                 }
-            }) => <img alt='giphy' src={images.fixed_height.url} />,
+            }) => <img alt='giphy' src={images.fixed_height_small.url} />,
             key: 'images',
         },
         {
@@ -125,15 +132,37 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
         onChange: (page: number) => setPageCurrent({...pageCurrent, pageFavorite: page})
     };
 
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [modalData, setModalData] = useState<ISearchGif | null>(null);
+
+    const showModal = (record: ISearchGif) => {
+        setModalData(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setModalData(null);
+        setIsModalOpen(false);
+    };
+
     return (
         <>
             {dataTable.length > 0 &&
                 <Table
+                    onRow={(record) => {
+                        return { onClick: (event) => showModal(record)};
+                    }}
+                    rowClassName={classes.table_row}
                     dataSource={dataTable}
                     columns={columns}
                     rowSelection={rowSelection}
                     pagination={isSearchResult ? paginationSearchParams : paginationFavoriteParams}
                 />
+            }
+            {modalData &&
+                <Modal title={modalData.title} open={isModalOpen} onCancel={handleCancel} footer={null}>
+                    <img className={classes.modal_image} src={modalData.images.original.url} alt='giphy'/>
+                </Modal>
             }
         </>
     );

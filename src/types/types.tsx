@@ -13,6 +13,12 @@ export interface ISearchGif {
     images: {
         fixed_height: {
             url: string;
+        },
+        fixed_height_small: {
+            url: string;
+        },
+        original: {
+            url: string
         }
     };
     title: string;

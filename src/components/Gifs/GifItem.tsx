@@ -4,7 +4,7 @@ import {HeartTwoTone} from '@ant-design/icons';
 import {useAppDispatch, useAppSelector} from "../../store/hooks";
 import {addFavoriteGifs, removeFavoriteGifs, selectFavorites} from "../../store/slices/favoriteSlice"
 import {ISearchGif} from "../../types/types";
-import classes from "./Gifs.module.css";
+import classes from "./GifItem.module.css";
 
 const GifItem: React.FC<ISearchGif> = (result) => {
 
