@@ -1,7 +1,8 @@
 import React, {ChangeEvent, FC} from 'react';
 import classes from './SearchInput.module.css';
 import {fetchGifs} from "../../asyncAction/fetchGifs";
-import {useAppDispatch} from "../../store/hooks";
+import {useAppDispatch, useAppSelector} from "../../store/hooks";
+import {selectErrorAutocomplete} from "../../store/slices/autocompleteSlice";
 
 interface ISearchInputProps {
     query: string;
@@ -11,6 +12,7 @@ interface ISearchInputProps {
 
 const SearchInput: FC<ISearchInputProps> = ({query, setQuery, setIsShowAutocomplete}) => {
 
+    const errorAutocomplete = useAppSelector(selectErrorAutocomplete);
     const dispatch = useAppDispatch();
 
     const inputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -27,12 +29,15 @@ const SearchInput: FC<ISearchInputProps> = ({query, setQuery, setIsShowAutocompl
     };
 
     return (
-        <input className={classes.searchInput}
-            value={query}
-            onChange={inputChange}
-            placeholder='Please, enter the title of the animal...'
-            onKeyPress={handleKeyPress}
-        />
+        <>
+            <input className={classes.searchInput}
+                   value={query}
+                   onChange={inputChange}
+                   placeholder='Please, enter the title of the animal...'
+                   onKeyPress={handleKeyPress}
+            />
+            {errorAutocomplete && <h2 className={classes.errorMessage}>Autocomplete error occurred: {errorAutocomplete}</h2>}
+        </>
     );
 };
 

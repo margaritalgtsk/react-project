@@ -4,3 +4,6 @@
 .switchView {
 margin-top: 10px;
 }
+.errorMessage {
+    color: red;
+}

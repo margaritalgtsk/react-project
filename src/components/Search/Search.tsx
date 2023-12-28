@@ -14,7 +14,7 @@ import GifsTableView from '../Gifs/GifsTableView';
 import useLocalStorage from "../../hooks/useLocalStorage";
 import classes from "./Search.module.css";
 import {selectFavorites} from "../../store/slices/favoriteSlice";
-import {selectSearchGifs} from "../../store/slices/searchGifsSlice";
+import {selectErrorGifs, selectSearchGifs, selectStatusGifs} from "../../store/slices/searchGifsSlice";
 import {selectAutocomplete} from "../../store/slices/autocompleteSlice";
 
 const Search = () => {
@@ -27,6 +27,8 @@ const Search = () => {
 
     const favorites = useAppSelector(selectFavorites);
     const searchGifs = useAppSelector(selectSearchGifs);
+    const statusGifs = useAppSelector(selectStatusGifs);
+    const errorGifs = useAppSelector(selectErrorGifs);
     const searchAutocomplete = useAppSelector(selectAutocomplete);
     const dispatch = useAppDispatch();
 
@@ -73,6 +75,8 @@ const Search = () => {
                 />}
             <br />
             <Switch className={classes.switchView} checkedChildren="Table View" unCheckedChildren="Card View" checked={isTableView} onChange={handleChangeSwitch} />
+            {statusGifs === 'loading' && <h2>Loading...</h2>}
+            {errorGifs && <h2 className={classes.errorMessage}>An error occurred: {errorGifs}</h2>}
             <Tabs defaultActiveKey="1" items={items} />
         </div>
     );
