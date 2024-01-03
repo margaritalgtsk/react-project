@@ -132,17 +132,14 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
         onChange: (page: number) => setPageCurrent({...pageCurrent, pageFavorite: page})
     };
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [modalData, setModalData] = useState<ISearchGif | null>(null);
 
     const showModal = (record: ISearchGif) => {
         setModalData(record);
-        setIsModalOpen(true);
     };
 
     const handleCancel = () => {
         setModalData(null);
-        setIsModalOpen(false);
     };
 
     return (
@@ -160,7 +157,7 @@ const GifsTableView: FC<IGifsTableViewProps> = ({results, searchQuery, isSearchR
                 />
             }
             {modalData &&
-                <Modal title={modalData.title} open={isModalOpen} onCancel={handleCancel} footer={null}>
+                <Modal title={modalData.title} open={true} onCancel={handleCancel} footer={null}>
                     <img className={classes.modal_image} src={modalData.images.original.url} alt='giphy'/>
                 </Modal>
             }
